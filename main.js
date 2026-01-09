@@ -1,10 +1,12 @@
 const { app, BrowserWindow, session, net, ipcMain } = require('electron');
 const path = require('path');
 
-// Enable HTTP/3 (QUIC) support with comprehensive flags
-app.commandLine.appendSwitch('enable-quic');
+// Enable HTTP/3 (QUIC) support - don't force, let it discover naturally
 app.commandLine.appendSwitch('quic-version', 'h3');
-app.commandLine.appendSwitch('enable-features', 'EnableTLS13EarlyData,UseNewQUICClient');
+app.commandLine.appendSwitch('log-net-log', './quic.log')
+
+// Use a fresh session partition to clear broken QUIC state
+const sessionPartition = 'persist:quic-fresh-' + Date.now();
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -12,7 +14,8 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      partition: sessionPartition
     }
   });
 
@@ -66,6 +69,12 @@ ipcMain.handle('open-net-internals', async () => {
 });
 
 app.whenReady().then(() => {
+  app.configureHostResolver({
+    secureDnsMode: 'secure',
+    secureDnsServers: [
+      'https://cloudflare-dns.com/dns-query'
+    ]
+  })
   createWindow();
 
   app.on('activate', () => {

@@ -4,9 +4,9 @@
   "description": "Electron app with HTTP/3 request",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron . --enable-logging --log-file=./metrics.log --no-sandbox --vmodule=*/metrics/*=2"
   },
   "devDependencies": {
-    "electron": "^33.0.0"
+    "electron": "^39.2.7"
   }
 }
