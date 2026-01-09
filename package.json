@@ -1,0 +1,12 @@
+{
+  "name": "electron-http3",
+  "version": "1.0.0",
+  "description": "Electron app with HTTP/3 request",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^33.0.0"
+  }
+}
